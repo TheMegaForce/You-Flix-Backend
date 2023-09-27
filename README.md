@@ -15,8 +15,8 @@ const userSchema = new mongoose.Schema({
 
 
 - video model
-
-const videoSchema = new mongoose.Schema({
+```
+ const videoSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   url: { type: String, required: true },
@@ -29,6 +29,7 @@ edit model
     userId: { ref: "User", type: mongoose.Schema.Types.ObjectId},
     videoId: { ref: "Video", type: mongoose.Schema.Types.ObjectId}
  })
+ ```
 
 ## Build with
 MERN
