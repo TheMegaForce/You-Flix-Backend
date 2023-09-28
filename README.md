@@ -1,6 +1,7 @@
 # You-Flix-Backend
 
 ## Models
+```
 - user model
 
 const userSchema = new mongoose.Schema({
@@ -11,11 +12,8 @@ const userSchema = new mongoose.Schema({
 });
 
 
-
-
-
 - video model
-```
+
  const videoSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
