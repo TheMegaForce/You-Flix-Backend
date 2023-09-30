@@ -1,11 +1,11 @@
-// models/video.js
-const mongoose = require('mongoose');
+// models/edit.js
+const mongoose = require('../db/connection');
 
 const videoSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  description: { type: String, required: true },
-  url: { type: String, required: true },
-  // Add more fields as needed, e.g., likes, comments, timestamps, etc.
+  userId: { ref: 'User', type: mongoose.Schema.Types.ObjectId },
+  title:{type: String, required: true},
+  description:{type: String, required: true},
+  url:{type: String, required: true},
 });
 
 const Video = mongoose.model('Video', videoSchema);

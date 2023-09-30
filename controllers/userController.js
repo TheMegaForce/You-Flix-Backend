@@ -1,3 +1,4 @@
+//userController.js
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user'); // Import the User model
@@ -15,17 +16,14 @@ router.get('/', async (req, res) => {
 
 // Create: Add a new user (User Registration)
 router.post('/register', async (req, res) => {
-  try {
-    // Validate and hash the password before creating the user
-    const { username, password } = req.body;
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-    
-    const newUser = await User.create({ username, password: hashedPassword });
-    res.status(201).json(newUser);
-  } catch (error) {
-    res.status(400).json({ error: 'User registration failed' });
-  }
+  if (req.body.username && req.body.password) {
+      let plainTextPassword = req.body.password
+      bcrypt.hash(plainTextPassword, 10, async (err, hashedPassword) => {
+          req.body.password = hashedPassword;
+          let newUser = await User.create(req.body);
+          res.send(newUser);
+      });
+  };
 });
 
 // Login a user
@@ -40,6 +38,7 @@ router.post('/login', async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
+
     // Compare the entered password with the hashed password
     const passwordMatch = await bcrypt.compare(password, user.password);
 
@@ -53,6 +52,11 @@ router.post('/login', async (req, res) => {
   } catch (error) {
     res.status(400).json({ error: 'Login failed' });
   }
+});
+
+router.get("/logout", (req, res) => {
+  req.session.destroy()
+  res.json({message: "logout successful"})
 });
 
 // Show: Get user by ID
