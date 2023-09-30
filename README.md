@@ -2,7 +2,7 @@
 
 ## Models
 ```
-- user model
+user model
 
 const userSchema = new mongoose.Schema({
     name: { type: string, required: true, unique: true}
@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
 });
 
 
-- video model
+video model
 
  const videoSchema = new mongoose.Schema({
   title: { type: String, required: true },
