@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user'); // Import the User model
 const bcrypt = require('bcrypt');
+const cors = require('cors');
 
 // Index: Get all users
 router.get('/', async (req, res) => {
@@ -17,11 +18,11 @@ router.get('/', async (req, res) => {
 router.post('/register', async (req, res) => {
   try {
     // Validate and hash the password before creating the user
-    const { username, password } = req.body;
+    const { name, image, username, password } = req.body;
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     
-    const newUser = await User.create({ username, password: hashedPassword });
+    const newUser = await User.create({ name, image, username, password: hashedPassword });
     res.status(201).json(newUser);
   } catch (error) {
     res.status(400).json({ error: 'User registration failed' });
@@ -29,7 +30,7 @@ router.post('/register', async (req, res) => {
 });
 
 // Login a user
-router.post('/login', async (req, res) => {
+router.post('/login', cors(), async (req, res) => {
   try {
     const { username, password } = req.body;
     
