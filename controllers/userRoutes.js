@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user'); // Import the User model
 const bcrypt = require('bcrypt');
+const cors = require('cors');
 
 // Index: Get all users
 router.get('/', async (req, res) => {
@@ -15,21 +16,40 @@ router.get('/', async (req, res) => {
 
 // Create: Add a new user (User Registration)
 router.post('/register', async (req, res) => {
+  console.log(req.body);
   try {
-    // Validate and hash the password before creating the user
-    const { username, password } = req.body;
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-    
-    const newUser = await User.create({ username, password: hashedPassword });
-    res.status(201).json(newUser);
+    const { name, image, username, password } = req.body;
+
+    // Check if the username is already taken
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Username is already taken.' });
+    }
+
+    const existingName = await User.findOne({ name });
+    if (existingName) {
+      return res.status(400).json({ message: 'The name { ' + name + ' } is already taken.' });
+    }
+
+    // Hash the password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Create a new user
+    const newUser = new User({ name, image, username, password: hashedPassword });
+
+    // Save the user to the database
+    await newUser.save();
+
+    res.status(201).json({ message: 'User created successfully.' });
   } catch (error) {
-    res.status(400).json({ error: 'User registration failed' });
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error.' });
   }
 });
 
 // Login a user
-router.post('/login', async (req, res) => {
+router.post('/login', cors(), async (req, res) => {
   try {
     const { username, password } = req.body;
     
