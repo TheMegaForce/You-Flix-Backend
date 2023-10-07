@@ -16,6 +16,7 @@ router.get('/', async (req, res) => {
 
 // Create: Add a new user (User Registration)
 router.post('/register', async (req, res) => {
+  console.log(req.body);
   try {
     const { name, image, username, password } = req.body;
 
